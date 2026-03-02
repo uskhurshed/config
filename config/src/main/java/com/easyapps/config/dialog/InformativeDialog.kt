@@ -48,19 +48,20 @@ class InformativeDialog(context: Context) : Dialog(context) {
             setPadding(20.dpToPx())
             gravity = Gravity.CENTER
         }
-
+        val animationView = LottieAnimationView(context)
         // Create LottieAnimationView
-        val animationView = LottieAnimationView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(220.dpToPx(), 220.dpToPx()).apply {
+        runCatching {
+            animationView.layoutParams = LinearLayout.LayoutParams(220.dpToPx(), 220.dpToPx()).apply {
                 gravity = Gravity.CENTER_HORIZONTAL
                 setMargins(30)
             }
-            lottie?.let {
-                setAnimationFromJson(it,message)
-            }
-            repeatCount = INFINITE
-            playAnimation()
+            lottie?.let { animationView.setAnimationFromJson(it, message) }
+            animationView.repeatCount = INFINITE
+            animationView.playAnimation()
+        }.onFailure {
+            animationView.isVisible = false
         }
+
         if (lottie.isNullOrEmpty()) animationView.isVisible = false
 
         // Create Title TextView
